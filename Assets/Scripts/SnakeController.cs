@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class SnakeController : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class SnakeController : MonoBehaviour
 	public float BonesDistance;
 	[Range (0, 4)]
 	public float Speed;
+	[Range(0, 10)]
+	public float RotationSpeed = 4.0f;
+	public float Acceleration = 0.015f;
 	public GameObject BonePrefab;
 	private Transform _transform;
 
@@ -24,7 +28,7 @@ public class SnakeController : MonoBehaviour
 	{
 		MoveSnake(_transform.position + transform.forward * Speed);
 
-		float angel = Input.GetAxis("Horizontal") * 4;
+		float angel = Input.GetAxis("Horizontal") * RotationSpeed;
 		_transform.Rotate(0, angel, 0);
 	}
 
@@ -61,6 +65,13 @@ public class SnakeController : MonoBehaviour
 			{
 				OnEat.Invoke();
 			}
+
+			Speed += Acceleration;
+		}
+
+		if(collision.gameObject.tag == "Walls")
+		{
+			SceneManager.LoadScene(1);
 		}
 	}
 }
