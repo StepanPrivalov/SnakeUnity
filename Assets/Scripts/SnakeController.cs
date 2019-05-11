@@ -9,26 +9,28 @@ public class SnakeController : MonoBehaviour
 	public List<Transform> Tails;
 	[Range(0, 3)]
 	public float BonesDistance;
-	[Range (0, 4)]
+	[Range (0, 8)]
 	public float Speed;
-	[Range(0, 10)]
+	[Range(0, 360)]
 	public float RotationSpeed = 4.0f;
 	public float Acceleration = 0.015f;
 	public GameObject BonePrefab;
+
 	private Transform _transform;
 
 	public UnityEvent OnEat;
+    public UnityEvent OnDead;
 
-	private void Start()
+    private void Start()
 	{
 		_transform = GetComponent<Transform>();
 	}
 
 	private void Update()
 	{
-		MoveSnake(_transform.position + transform.forward * Speed);
+		MoveSnake(_transform.position + transform.forward * Speed * Time.deltaTime);
 
-		float angel = Input.GetAxis("Horizontal") * RotationSpeed;
+        float angel = Input.GetAxis("Horizontal") * RotationSpeed * Time.deltaTime;
 		_transform.Rotate(0, angel, 0);
 	}
 
@@ -71,7 +73,11 @@ public class SnakeController : MonoBehaviour
 
 		if(collision.gameObject.tag == "Walls")
 		{
-			SceneManager.LoadScene(1);
-		}
-	}
+            if (OnDead != null)
+            {
+                OnDead.Invoke();
+            }
+
+        }
+    }
 }
